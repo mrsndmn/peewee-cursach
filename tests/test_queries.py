@@ -47,7 +47,7 @@ class TestQueries():
                 .join(model.Warehouse)
                 .where(model.Warehouse.address == address)
                 .order_by(model.Cargo.mass.desc())
-            )
+                )
 
     def test_shema(self, test_db):
         wh1 = model.Warehouse.create(address="test addr1", capacity=10)
@@ -100,14 +100,15 @@ class TestQueries():
 
         # 2) Названия организаций перевозчиков, работающих с грузами на складе по адресу X,
         # отсортированные по массам грузов
-        print("_get_query_organisations_by_warehouse_address_ordereb_by_cargo_mass")
-        for carrier in self._get_query_organisations_by_warehouse_address_ordereb_by_cargo_mass(
-                "test addr1").order_by(model.Cargo.mass):
-            print(carrier.organisation)
 
         # select carrier.organisation, cargo.mass from carrier join cargo, warehouse on
         #   ( carrier.id = cargo.carrier_id and cargo.warehouse_id = warehouse.id )
         #   where warehouse.address = 'test addr1' order by cargo.mass desc;
+
+        print("_get_query_organisations_by_warehouse_address_ordereb_by_cargo_mass")
+        for carrier in self._get_query_organisations_by_warehouse_address_ordereb_by_cargo_mass(
+                "test addr1").order_by(model.Cargo.mass):
+            print(carrier.organisation)
 
         # 3) Виды и вместительность контейнеров и массы грузов, хранящихся на складах с
         # помещениями объёмом больше X в стране Y (пусть форма складского помещения – цилиндр
