@@ -121,4 +121,18 @@ class TestQueries():
         #           where premise.heigth * premise.area > 10
         #       );
 
+        warehouses_with_big_premises = model.Warehouse.select().join(
+            model.Premise).where(model.Premise.heigth * model.Premise.area > 10000)
+
+        containers_in_big_premises = model.Cargo.select(
+            model.Cargo.mass, model.Container.capacity, model.Container.kind
+        ).join(
+            model.Container
+        ).where(
+            model.Cargo.warehouse.in_(warehouses_with_big_premises)
+        )
+        print("containers_in_big_premises")
+        for row in containers_in_big_premises.dicts():
+            print(row)
+
         return
