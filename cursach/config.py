@@ -1,4 +1,4 @@
 from peewee import *
 
 class CursachConf:
-    db = SqliteDatabase('ligist.db')
+    db = SqliteDatabase('logist.db')

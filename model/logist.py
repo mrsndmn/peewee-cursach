@@ -5,7 +5,8 @@ from cursach.config import CursachConf as cfg
 
 class LigistModel(Model):
     class Meta:
-        database =  cfg.db # This model uses the "people.db" database.
+        database = cfg.db  # This model uses the "people.db" database.
+
 
 class Warehouse(LigistModel):
     """
@@ -13,6 +14,7 @@ class Warehouse(LigistModel):
     """
     address = TextField()
     capacity = IntegerField()
+
 
 class Premise(LigistModel):
     """
@@ -22,12 +24,14 @@ class Premise(LigistModel):
     heigth = IntegerField()
     warehouse = ForeignKeyField(Warehouse, backref='premise')
 
+
 class Carrier(LigistModel):
     """
     Перевозчик
     """
     organisation = TextField()
-    cargo = IntegerField() # todo wat?! почему не FareignKey?
+    cargo = IntegerField()  # todo wat?! почему не FareignKey?
+
 
 class Cargo(LigistModel):
     """
@@ -35,7 +39,8 @@ class Cargo(LigistModel):
     """
     kind = TextField()
     mass = IntegerField()
-    carrier = ForeignKeyField(Carrier, backref='cargo')
+    carrier = ForeignKeyField(Carrier, backref='cargo_obj')
+    warehouse = ForeignKeyField(Warehouse, backref='cargo_obj')
 
 
 class Packaging(LigistModel):
@@ -45,6 +50,7 @@ class Packaging(LigistModel):
     product = TextField()
     quantity = IntegerField()
     cargo = ForeignKeyField(Cargo, backref='pack')
+
 
 class Container(LigistModel):
     """
