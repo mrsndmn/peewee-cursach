@@ -7,50 +7,12 @@ import tempfile
 import model.logist as model
 from cursach.config import CursachConf as cfg
 
-
-@pytest.fixture(scope='session')
-def test_db():
-    cfg.db.connect()
-
-    models = [
-        model.Warehouse,
-        model.Premise,
-        model.Carrier,
-        model.Cargo,
-        model.Packaging,
-        model.Container,
-    ]
-
-    cfg.db.create_tables(models)
-
-    yield
-
-    cfg.db.close()
-    # os.unlink('logist.db')
-
-    return
-
+from model.queries import TrifonQueries
 
 class TestQueries():
 
-    def _get_query_packed_cargos_with_type(self, type):
-        return (model.Cargo
-                .select()
-                .join(model.Packaging, on=(model.Cargo.id == model.Packaging.cargo))
-                .where(model.Cargo.kind == type)
-                .count())
-
-    def _get_query_organisations_by_warehouse_address_ordereb_by_cargo_mass(self, address):
-        return (model.Carrier
-                .select()
-                .join(model.Cargo)
-                .join(model.Warehouse)
-                .where(model.Warehouse.address == address)
-                .order_by(model.Cargo.mass.desc())
-                )
-
-    def test_shema(self, test_db):
-        wh1 = model.Warehouse.create(address="test addr1", capacity=10)
+    def test_shema(self):
+        wh1 = model.Warehouse.create(address="test addr1 RU", capacity=10)
         wh1.save()
         wh2 = model.Warehouse.create(address="test addr2", capacity=100)
         wh2.save()
@@ -87,14 +49,14 @@ class TestQueries():
 
         # X = cargo-kind1
         packed_type = 'cargo-kind1'
-        count = self._get_query_packed_cargos_with_type(packed_type)
+        count = TrifonQueries.get_query_packed_cargos_with_type(packed_type)
         print(f"type {packed_type} count = {count}")
         assert count > 0
 
         # X = cargo_no_pack
         # продукты без упаковки
         packed_type = 'cargo_no_pack'
-        count = self._get_query_packed_cargos_with_type(packed_type)
+        count = TrifonQueries.get_query_packed_cargos_with_type(packed_type)
         print(f"type {packed_type} count = {count}")
         assert count == 0
 
@@ -106,7 +68,7 @@ class TestQueries():
         #   where warehouse.address = 'test addr1' order by cargo.mass desc;
 
         print("_get_query_organisations_by_warehouse_address_ordereb_by_cargo_mass")
-        for carrier in self._get_query_organisations_by_warehouse_address_ordereb_by_cargo_mass(
+        for carrier in TrifonQueries.get_query_organisations_by_warehouse_address_ordereb_by_cargo_mass(
                 "test addr1").order_by(model.Cargo.mass):
             print(carrier.organisation)
 
@@ -122,18 +84,8 @@ class TestQueries():
         #           where premise.heigth * premise.area > 10
         #       );
 
-        warehouses_with_big_premises = model.Warehouse.select().join(
-            model.Premise).where(model.Premise.heigth * model.Premise.area > 10000)
-
-        containers_in_big_premises = model.Cargo.select(
-            model.Cargo.mass, model.Container.capacity, model.Container.kind
-        ).join(
-            model.Container
-        ).where(
-            model.Cargo.warehouse.in_(warehouses_with_big_premises)
-        )
         print("containers_in_big_premises")
-        for row in containers_in_big_premises.dicts():
+        for row in TrifonQueries.get_mass_cap_kind_by_country_and_volume("RU", 1000):
             print(row)
 
         return
