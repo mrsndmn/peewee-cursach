@@ -1,8 +1,7 @@
 import model.logist as model
 from cursach.config import CursachConf as cfg
 from peewee import SqliteDatabase
-
-
+import peewee
 
 class TrifonQueries():
     cfg.db.connect()
@@ -21,10 +20,9 @@ class TrifonQueries():
 
     def get_query_packed_cargos_with_type(type):
         return (model.Cargo
-                .select()
+                .select(peewee.fn.sum(model.Packaging.quantity))
                 .join(model.Packaging, on=(model.Cargo.id == model.Packaging.cargo))
-                .where(model.Cargo.kind == type)
-                .count())
+                .where(model.Cargo.kind == type)).dicts()
 
     def get_query_organisations_by_warehouse_address_ordereb_by_cargo_mass(address):
         return (model.Carrier
