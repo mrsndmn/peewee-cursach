@@ -10,6 +10,7 @@ peewee = "*"
 pytest = "*"
 pyqt5 = "*"
 pyqt5-tools = "*"
+peewee-migrate = "*"
 
 [requires]
 python_version = "3.7"

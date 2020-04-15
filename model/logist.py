@@ -2,7 +2,6 @@ from peewee import *
 
 from cursach.config import CursachConf as cfg
 
-
 class LigistModel(Model):
     class Meta:
         database = cfg.db  # This model uses the "people.db" database.
@@ -59,3 +58,17 @@ class Container(LigistModel):
     kind = TextField()
     capacity = IntegerField()
     cargo = ForeignKeyField(Cargo, backref='conteainer')
+
+
+cfg.db.connect()
+
+models = [
+    Warehouse,
+    Premise,
+    Carrier,
+    Cargo,
+    Packaging,
+    Container,
+]
+
+cfg.db.create_tables(models)

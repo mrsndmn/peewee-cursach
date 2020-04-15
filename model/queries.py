@@ -4,18 +4,6 @@ from peewee import SqliteDatabase
 import peewee
 
 class TrifonQueries():
-    cfg.db.connect()
-
-    models = [
-        model.Warehouse,
-        model.Premise,
-        model.Carrier,
-        model.Cargo,
-        model.Packaging,
-        model.Container,
-    ]
-
-    cfg.db.create_tables(models)
 
 
     def get_query_packed_cargos_with_type(type):

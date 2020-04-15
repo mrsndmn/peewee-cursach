@@ -1,5 +1,6 @@
 from peewee import SqliteDatabase
 from peewee_migrate import Router
+import cursach.config
 
 from model.logist import Warehouse, Premise, Carrier, Cargo, Packaging, Container
 
