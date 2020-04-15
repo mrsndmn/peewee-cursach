@@ -27,7 +27,7 @@ class TrifonQueries():
             model.Premise).where(
                 model.Premise.heigth * model.Premise.area > volume
                 and
-                model.Warehouse.address % '*RU*'
+                model.Warehouse.address % country
             )
 
         containers_in_big_premises = model.Cargo.select(

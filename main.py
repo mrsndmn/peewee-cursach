@@ -1,11 +1,11 @@
 import sys
-from PyQt5.QtCore import * 
+from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from model import *
 
 import model.logist as models
-import model.queries as TrifonQueries
+from model.queries import TrifonQueries
 
 
 class MainWindow(QMainWindow):
@@ -127,23 +127,24 @@ class MainWindow(QMainWindow):
         text, ok = QInputDialog.getInt(self, 'Минимальный объём', 'Введите минимальный объём:')
         if ok:
             self.query_label_volume.setText('Минимальный объём: ' + str(text))
-    
+
     def query(self):
         dict = {}
         try:
             dict['capacity'] = int(self.query_label_volume.text()[19:])
             dict['address'] = self.query_addres.currentText()
             myQuery = TrifonQueries.get_mass_cap_kind_by_country_and_volume(dict['address'], dict['capacity']) # проверить правильно ли всё проходит
+            print("get_mass_cap_kind_by_country_and_volume", list(myQuery))
             self.init_model(myQuery)
-        except:
-            QErrorMessage(self).showMessage('Заполните все поля корректно')
-                
+        except Exception as e:
+            QErrorMessage(self).showMessage('Заполните все поля корректно'+str(e))
+
     def init_model(self, data=[]):
-        model = QStandardItemModel(0, 3, self.table) # проверить заполнение таблицы
-        model.setHeaderData(0, Qt.Horizontal, u"Вид контейнера")
-        model.setHeaderData(1, Qt.Horizontal, u"Вместимость контейнера")
-        model.setHeaderData(2, Qt.Horizontal, u"Масса груза")
-        self.table.setModel(model)
+        self.model = QStandardItemModel(0, 3, self.table) # проверить заполнение таблицы
+        self.model.setHeaderData(0, Qt.Horizontal, u"Вид контейнера")
+        self.model.setHeaderData(1, Qt.Horizontal, u"Вместимость контейнера")
+        self.model.setHeaderData(2, Qt.Horizontal, u"Масса груза")
+        self.table.setModel(self.model)
         self.table.setColumnWidth(0, 200)
         self.table.setColumnWidth(1, 200)
         self.table.setColumnWidth(2, 200)
@@ -152,9 +153,9 @@ class MainWindow(QMainWindow):
 
     def addSightModel(self, item):
         self.model.insertRow(0)
-        self.model.setData(self.model.index(0, 0), item.kind)
-        self.model.setData(self.model.index(0, 1), item.capacity)
-        self.model.setData(self.model.index(0, 2), item.mass)
+        self.model.setData(self.model.index(0, 0), item["kind"])
+        self.model.setData(self.model.index(0, 1), item["capacity"])
+        self.model.setData(self.model.index(0, 2), item["mass"])
 
 def main():
     app = QApplication(sys.argv)
