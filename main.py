@@ -134,6 +134,7 @@ class MainWindow(QMainWindow):
             dict['capacity'] = int(self.query_label_volume.text()[19:])
             dict['address'] = self.query_addres.currentText()
             myQuery = TrifonQueries.get_mass_cap_kind_by_country_and_volume(dict['address'], dict['capacity']) # проверить правильно ли всё проходит
+            print("get_mass_cap_kind_by_country_and_volume", myQuery)
             print("get_mass_cap_kind_by_country_and_volume", list(myQuery))
             self.init_model(myQuery)
         except Exception as e:

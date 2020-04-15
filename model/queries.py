@@ -25,10 +25,11 @@ class TrifonQueries():
 
         warehouses_with_big_premises = model.Warehouse.select().join(
             model.Premise).where(
-                model.Premise.heigth * model.Premise.area > volume
-                and
+                (model.Premise.heigth * model.Premise.area > volume)
+                &
                 model.Warehouse.address % country
             )
+        print(warehouses_with_big_premises)
 
         containers_in_big_premises = model.Cargo.select(
             model.Cargo.mass, model.Container.capacity, model.Container.kind
